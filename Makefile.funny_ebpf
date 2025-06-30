@@ -1,0 +1,13 @@
+BPF_CLANG=clang
+CFLAGS=-O2 -Wall -target bpf -D__TARGET_ARCH_x86 -g -Iinclude
+
+all:
+	$(BPF_CLANG) $(CFLAGS) -c src/funny_ebpf.c -o src/funny_ebpf.o
+	bpftool gen skeleton src/funny_ebpf.o > src/funny_ebpf.h
+	sudo rm -rf /sys/fs/bpf/funny_ebpf
+	sudo bpftool prog load src/funny_ebpf.o /sys/fs/bpf/funny_ebpf type tracepoint
+	sudo bpftool prog attach pinned /sys/fs/bpf/funny_ebpf tracepoint syscalls:sys_enter_execve
+	#sudo bpftool prog attach id 773 tracepoint syscalls:sys_enter_execve	
+	sudo bpftool prog
+	/usr/bin/gcc & sleep 5
+	sudo rg funny_ebpf /sys/kernel/debug/tracing/trace_pipe
