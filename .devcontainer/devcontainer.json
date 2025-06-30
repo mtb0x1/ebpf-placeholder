@@ -1,0 +1,16 @@
+// .devcontainer/devcontainer.json
+{
+  "name": "eBPF Dev",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Base image
+  "features": {
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "postCreateCommand": "bash .devcontainer/setup-ebpf.sh",
+  "mounts": [
+    "source=/lib/modules,target=/lib/modules,type=bind,consistency=cached"
+  ],
+  "privileged": true, // Required for BCC tools and kernel access
+  "remoteUser": "vscode"
+}
