@@ -1,0 +1,15 @@
+BPF_CLANG=clang
+CFLAGS=-O2 -Wall -target bpf -g -Iinclude
+
+all:
+	$(BPF_CLANG) $(CFLAGS) -c src/demo_ebpf.c -o src/demo_ebpf.o
+	sudo ip link set dev eth0 xdp off
+	sudo rm -rf /sys/fs/bpf/demo_ebpf
+	sudo bpftool prog load src/demo_ebpf.o /sys/fs/bpf/demo_ebpf
+	sudo ip link set dev eth0 xdp obj src/demo_ebpf.o sec xdp		
+	sudo bpftool prog
+	sudo bpftool net
+	ping -c 20 127.0.0.1 > /dev/null &
+	sudo perf record -e cycles:k -a -g -- sleep 5
+	#sometime it fails cause it doesn't gen enough stress and thus not in the report
+	sudo perf report | grep demo_ebpf_pass

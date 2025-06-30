@@ -4,4 +4,5 @@ sudo apt-get update && sudo apt-get install -y \
   libbpf-dev linux-headers-$(uname -r) \
   bpfcc-tools python3-bpfcc \
   cmake \
-  linux-tools-common linux-tools-generic linux-tools-$(uname -r) 
+  linux-tools-common linux-tools-generic linux-tools-$(uname -r) \
+  trace-cmd ripgrep
